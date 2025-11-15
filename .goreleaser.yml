@@ -54,18 +54,18 @@ release:
     Full Changelog: https://github.com/gjbravi/crossbench/compare/{{ .PreviousTag }}...{{ .Tag }}
 
 # Homebrew tap configuration
-homebrew:
-  name: crossbench
-  tap:
-    owner: gjbravi
-    name: homebrew-crossbench
-    token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
-  description: "A CLI tool for rendering Crossplane compositions"
-  homepage: "https://github.com/gjbravi/crossbench"
-  license: "Apache-2.0"
-  test: |
-    system "#{bin}/crossbench", "version"
-  dependencies: []
+brews:
+  - name: crossbench
+    tap:
+      owner: gjbravi
+      name: homebrew-crossbench
+      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+    description: "A CLI tool for rendering Crossplane compositions"
+    homepage: "https://github.com/gjbravi/crossbench"
+    license: "Apache-2.0"
+    test: |
+      system "#{bin}/crossbench", "version"
+    dependencies: []
 
 # Snapshot configuration (for testing)
 snapshot:
