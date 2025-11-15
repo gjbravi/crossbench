@@ -57,7 +57,7 @@ brews:
       owner: gjbravi
       name: crossbench
       branch: main
-      path: homebrew-tap
+    directory: homebrew-tap
     description: "A CLI tool for rendering Crossplane compositions"
     homepage: "https://github.com/gjbravi/crossbench"
     license: "Apache-2.0"
