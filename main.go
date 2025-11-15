@@ -15,8 +15,9 @@ func main() {
 		Long:  "crossbench is a CLI tool that provides the same rendering functionalities as Crossplane's render command.",
 	}
 
-	// Add render command
+	// Add commands
 	rootCmd.AddCommand(cmd.NewRenderCommand())
+	rootCmd.AddCommand(cmd.NewVersionCommand())
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)

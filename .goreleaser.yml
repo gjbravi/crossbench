@@ -1,0 +1,82 @@
+# GoReleaser configuration for crossbench
+# https://goreleaser.com
+
+project_name: crossbench
+
+# Build configuration
+builds:
+  - id: crossbench
+    main: ./main.go
+    binary: crossbench
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+      - -X github.com/gjbravi/crossbench/cmd.version={{.Version}}
+      - -X github.com/gjbravi/crossbench/cmd.commit={{.Commit}}
+      - -X github.com/gjbravi/crossbench/cmd.date={{.Date}}
+
+# Archive configuration
+archives:
+  - format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - README.md
+      - LICENSE
+
+# Checksums
+checksum:
+  name_template: "checksums.txt"
+
+# GitHub release configuration
+release:
+  github:
+    owner: gjbravi
+    name: crossbench
+  draft: false
+  prerelease: auto
+  mode: replace
+  header: |
+    ## What's Changed
+    
+    Full Changelog: https://github.com/gjbravi/crossbench/compare/{{ .PreviousTag }}...{{ .Tag }}
+
+# Homebrew tap configuration
+homebrew:
+  name: crossbench
+  tap:
+    owner: gjbravi
+    name: homebrew-crossbench
+    token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+  description: "A CLI tool for rendering Crossplane compositions"
+  homepage: "https://github.com/gjbravi/crossbench"
+  license: "Apache-2.0"
+  test: |
+    system "#{bin}/crossbench", "version"
+  dependencies: []
+
+# Snapshot configuration (for testing)
+snapshot:
+  name_template: "{{ .Tag }}-next"
+
+# Changelog configuration
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+

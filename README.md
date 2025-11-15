@@ -11,9 +11,18 @@ A friendly CLI tool for testing and rendering Crossplane compositions locally. T
 
 ## Getting Started
 
-### Quick Install
+### Install via Homebrew (Recommended)
 
-The easiest way is using Go:
+The easiest way to install `crossbench` is using Homebrew:
+
+```bash
+brew tap gjbravi/crossbench
+brew install crossbench
+```
+
+### Install via Go
+
+You can also install directly using Go:
 
 ```bash
 go install github.com/gjbravi/crossbench@latest
@@ -26,7 +35,7 @@ This will install `crossbench` to your `$GOPATH/bin` (or `~/go/bin` by default).
 If you prefer to build it yourself:
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/gjbravi/crossbench.git
 cd crossbench
 go build -o crossbench .
 ```
