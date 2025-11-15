@@ -6,7 +6,7 @@ A friendly CLI tool for testing and rendering Crossplane compositions locally. T
 
 ## What this actually differs from actual `crossplane cli`?
 
-- **Auto-discover functions** - It automatically figures out which functions your composition needs and fetches the right versions from GitHub
+- **Auto-discover functions** - It automatically figures out which functions your composition needs and fetches the right pkg versions from crossplane AND/OR upbound repositories.
 - More to come...
 
 ## Getting Started
