@@ -12,14 +12,14 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/serializer/json"
 
-	"github.com/crossplane/crossplane-runtime/pkg/errors"
-	"github.com/crossplane/crossplane-runtime/pkg/fieldpath"
-	"github.com/crossplane/crossplane-runtime/pkg/logging"
-	"github.com/crossplane/crossplane-runtime/pkg/resource/unstructured/composed"
+	"github.com/crossplane/crossplane-runtime/v2/pkg/errors"
+	"github.com/crossplane/crossplane-runtime/v2/pkg/fieldpath"
+	"github.com/crossplane/crossplane-runtime/v2/pkg/logging"
+	"github.com/crossplane/crossplane-runtime/v2/pkg/resource/unstructured/composed"
 
-	v1 "github.com/crossplane/crossplane/apis/apiextensions/v1"
-	pkgv1 "github.com/crossplane/crossplane/apis/pkg/v1"
-	"github.com/crossplane/crossplane/cmd/crank/render"
+	apiextensionsv1 "github.com/crossplane/crossplane/v2/apis/apiextensions/v1"
+	pkgv1 "github.com/crossplane/crossplane/v2/apis/pkg/v1"
+	"github.com/crossplane/crossplane/v2/cmd/crank/render"
 )
 
 // NewRenderCommand creates a new render command.
@@ -141,14 +141,6 @@ func (c *renderCmd) run(cmd *cobra.Command, args []string) error {
 		return errors.Errorf("composition's compositeTypeRef.apiVersion (%s) does not match XR's apiVersion (%s)", compRef.APIVersion, xrGVK.GroupVersion().String())
 	}
 
-	warns, errs := comp.Validate()
-	for _, warn := range warns {
-		_, _ = fmt.Fprintf(os.Stderr, "WARN(composition): %s\n", warn)
-	}
-	if len(errs) > 0 {
-		return errors.Wrapf(errs.ToAggregate(), "invalid Composition %q", comp.GetName())
-	}
-
 	// check if XR's matchLabels have corresponding label at composition
 	xrSelector := xr.GetCompositionSelector()
 	if xrSelector != nil {
@@ -164,7 +156,7 @@ func (c *renderCmd) run(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	if m := comp.Spec.Mode; m == nil || *m != v1.CompositionModePipeline {
+	if comp.Spec.Mode != apiextensionsv1.CompositionModePipeline {
 		return errors.Errorf("render only supports Composition Function pipelines: Composition %q must use spec.mode: Pipeline", comp.GetName())
 	}
 
@@ -206,7 +198,7 @@ func (c *renderCmd) run(cmd *cobra.Command, args []string) error {
 
 	ers := []unstructured.Unstructured{}
 	if c.extraResources != "" {
-		ers, err = render.LoadExtraResources(c.fs, c.extraResources)
+		ers, err = render.LoadRequiredResources(c.fs, c.extraResources)
 		if err != nil {
 			return errors.Wrapf(err, "cannot load extra resources from %q", c.extraResources)
 		}

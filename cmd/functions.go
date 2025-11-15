@@ -13,8 +13,8 @@ import (
 	"time"
 
 	"github.com/spf13/afero"
-	pkgv1 "github.com/crossplane/crossplane/apis/pkg/v1"
-	v1 "github.com/crossplane/crossplane/apis/apiextensions/v1"
+	pkgv1 "github.com/crossplane/crossplane/v2/apis/pkg/v1"
+	apiextensionsv1 "github.com/crossplane/crossplane/v2/apis/apiextensions/v1"
 )
 
 // FunctionVersionCache represents the cache structure for function versions
@@ -152,8 +152,8 @@ func setCachedVersion(cache *FunctionVersionCache, cacheKey, version string) {
 // ExtractFunctionsFromComposition extracts function references from a Composition's pipeline
 // and creates Function resources for them. It fetches the latest version from GitHub releases.
 // If forceRefresh is true, it will bypass cache and fetch fresh versions.
-func ExtractFunctionsFromComposition(comp *v1.Composition, fs afero.Fs, forceRefresh bool) ([]pkgv1.Function, error) {
-	if comp.Spec.Mode == nil || *comp.Spec.Mode != v1.CompositionModePipeline {
+func ExtractFunctionsFromComposition(comp *apiextensionsv1.Composition, fs afero.Fs, forceRefresh bool) ([]pkgv1.Function, error) {
+	if comp.Spec.Mode != apiextensionsv1.CompositionModePipeline {
 		return nil, fmt.Errorf("composition must use Pipeline mode to extract functions")
 	}
 
