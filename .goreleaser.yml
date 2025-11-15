@@ -11,7 +11,6 @@ builds:
     goos:
       - linux
       - darwin
-      - windows
     goarch:
       - amd64
       - arm64
@@ -28,9 +27,6 @@ builds:
 # Archive configuration
 archives:
   - format: tar.gz
-    format_overrides:
-      - goos: windows
-        format: zip
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     files:
       - README.md
@@ -54,12 +50,14 @@ release:
     Full Changelog: https://github.com/gjbravi/crossbench/compare/{{ .PreviousTag }}...{{ .Tag }}
 
 # Homebrew tap configuration
+# Using the same repository with a subdirectory (no separate tap repo needed!)
 brews:
   - name: crossbench
     repository:
       owner: gjbravi
-      name: homebrew-crossbench
-      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+      name: crossbench
+      branch: main
+      path: homebrew-tap
     description: "A CLI tool for rendering Crossplane compositions"
     homepage: "https://github.com/gjbravi/crossbench"
     license: "Apache-2.0"
