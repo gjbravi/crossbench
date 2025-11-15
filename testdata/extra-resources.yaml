@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bucket-config
+  namespace: default
+data:
+  environment: production
+  region: us-east-2
+

@@ -1,0 +1,15 @@
+apiVersion: s3.aws.crossplane.io/v1beta1
+kind: Bucket
+metadata:
+  name: my-example-bucket
+  annotations:
+    crossplane.io/composition-resource-name: s3bucket
+status:
+  atProvider:
+    arn: arn:aws:s3:::my-example-bucket
+    region: us-east-2
+  conditions:
+    - type: Ready
+      status: "True"
+      lastTransitionTime: "2024-01-01T00:00:00Z"
+

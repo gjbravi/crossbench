@@ -1,0 +1,33 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: bucket-composition
+spec:
+  compositeTypeRef:
+    apiVersion: example.crossplane.io/v1
+    kind: Bucket
+  mode: Pipeline
+  pipeline:
+    - step: configure-bucket
+      functionRef:
+        name: crossplane-contrib-function-patch-and-transform
+      input:
+        apiVersion: pt.fn.crossplane.io/v1beta1
+        kind: Resources
+        resources:
+          - name: s3bucket
+            base:
+              apiVersion: s3.aws.crossplane.io/v1beta1
+              kind: Bucket
+              spec:
+                forProvider:
+                  locationConstraint: us-east-2
+                  acl: private
+            patches:
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.bucketRegion
+                toFieldPath: spec.forProvider.locationConstraint
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.bucketName
+                toFieldPath: metadata.name
+

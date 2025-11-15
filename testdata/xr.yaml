@@ -1,0 +1,8 @@
+apiVersion: example.crossplane.io/v1
+kind: Bucket
+metadata:
+  name: example-bucket
+spec:
+  bucketRegion: us-east-2
+  bucketName: my-example-bucket
+

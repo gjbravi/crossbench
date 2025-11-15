@@ -1,0 +1,91 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: multi-step-composition
+spec:
+  compositeTypeRef:
+    apiVersion: example.crossplane.io/v1
+    kind: Bucket
+  mode: Pipeline
+  pipeline:
+    # Step 1: Patch and Transform - Create the S3 bucket
+    - step: create-bucket
+      functionRef:
+        name: crossplane-contrib-function-patch-and-transform
+      input:
+        apiVersion: pt.fn.crossplane.io/v1beta1
+        kind: Resources
+        resources:
+          - name: bucket
+            base:
+              apiVersion: s3.aws.crossplane.io/v1beta1
+              kind: Bucket
+              spec:
+                forProvider:
+                  locationConstraint: us-east-2
+                  acl: private
+            patches:
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.bucketRegion
+                toFieldPath: spec.forProvider.locationConstraint
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.bucketName
+                toFieldPath: metadata.name
+    
+    # Step 2: KCL - Create a ConfigMap using KCL function
+    - step: create-configmap-kcl
+      functionRef:
+        name: function-kcl
+      input:
+        apiVersion: krm.kcl.dev/v1alpha1
+        kind: KCLRun
+        spec:
+          source: |
+            import yaml
+            
+            bucket_name = option("bucketName")
+            region = option("bucketRegion")
+            
+            configmap = {
+                apiVersion = "v1"
+                kind = "ConfigMap"
+                metadata = {
+                    name = "bucket-config-{}".format(bucket_name)
+                    annotations = {
+                        "kcl.fn.crossplane.io/composition-resource-name" = "configmap"
+                    }
+                }
+                data = {
+                    bucketName = bucket_name
+                    region = region
+                    createdBy = "crossbench"
+                }
+            }
+            
+            items = [configmap]
+    
+    # Step 3: Auto-Ready - Automatically detect when resources are ready
+    - step: mark-ready
+      functionRef:
+        name: function-auto-ready
+      input:
+        apiVersion: autoready.fn.crossplane.io/v1beta1
+        kind: AutoReady
+        # This function will automatically check status conditions
+        # and mark resources as ready when appropriate
+    
+    # Step 4: Unit Test - Run CEL expressions to validate the desired state
+    # Note: This step tests function extraction. The actual function execution
+    # may require specific input format that varies by function version.
+    - step: validate-resources
+      functionRef:
+        name: function-unit-test
+      input:
+        apiVersion: unittest.fn.crossplane.io/v1beta1
+        kind: TestCases
+        errorOnFailedTest: false
+        testCases:
+          - description: "Ensure bucket resource exists"
+            assert: |
+              "bucket" in desired.resources &&
+              desired.resources["bucket"].resource.kind == "Bucket"
