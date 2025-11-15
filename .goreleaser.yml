@@ -56,7 +56,7 @@ release:
 # Homebrew tap configuration
 brews:
   - name: crossbench
-    tap:
+    repository:
       owner: gjbravi
       name: homebrew-crossbench
       token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
