@@ -4,20 +4,26 @@ A friendly CLI tool for testing and rendering Crossplane compositions locally. T
 
 `crossbench` uses the same battle-tested code from Crossplane's official `render` command, so you get identical behavior and results. Perfect for CI/CD pipelines, local development, or debugging compositions before deploying them.
 
-## What this actually differs from actual `crossplane cli`?
+## What this actually differs from actual `crossplane render`?
 
 - **Auto-discover functions** - It automatically figures out which functions your composition needs and fetches the right pkg versions from crossplane AND/OR upbound repositories.
 - More to come...
 
 ## Getting Started
 
-### Install via Homebrew (Recommended)
+### Install via Homebrew
 
-The easiest way to install `crossbench` is using Homebrew:
+Install `crossbench` using Homebrew:
 
 ```bash
-brew tap gjbravi/crossbench
+brew tap gjbravi/crossbench https://github.com/gjbravi/crossbench.git
 brew install crossbench
+```
+
+Or install directly:
+
+```bash
+brew install gjbravi/crossbench/crossbench
 ```
 
 ### Install via Go

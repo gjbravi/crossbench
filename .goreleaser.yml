@@ -50,14 +50,13 @@ release:
     Full Changelog: https://github.com/gjbravi/crossbench/compare/{{ .PreviousTag }}...{{ .Tag }}
 
 # Homebrew tap configuration
-# Using the same repository with a subdirectory (no separate tap repo needed!)
+# Using same repository, formula in root directory
 brews:
   - name: crossbench
     repository:
       owner: gjbravi
       name: crossbench
       branch: main
-    directory: homebrew-tap
     description: "A CLI tool for rendering Crossplane compositions"
     homepage: "https://github.com/gjbravi/crossbench"
     license: "Apache-2.0"

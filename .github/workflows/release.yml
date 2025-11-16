@@ -31,4 +31,5 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Using same repository, so HOMEBREW_TAP_TOKEN not needed
 
